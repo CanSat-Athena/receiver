@@ -1,0 +1,3 @@
+[submodule "pico-lora"]
+	path = pico-lora
+	url = https://github.com/CanSat-Athena/pico-lora
