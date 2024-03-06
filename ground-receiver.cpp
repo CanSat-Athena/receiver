@@ -11,6 +11,8 @@
 
 // Global vars
 const uint attempts = 3;
+volatile bool received = false;
+volatile char receivedBuf[RADIO_MAX_PACKET_SIZE + 1];
 
 void initLoRa();
 void putStr(const char* str, uint8_t printToItf = 0);
@@ -29,11 +31,12 @@ void onReceive(int packetSize) {
     // if (type != 't') putchar(type);
 
     // Read packet
+    received = true;
+
     for (int i = 0; i < packetSize; i++) {
-        char c = LoRa.read();
-        if (i > 0)
-            putStr("%c", c);
+        receivedBuf[i] = LoRa.read();
     }
+    receivedBuf[packetSize] = '\0';
 
     // print RSSI of packet
     // printf("' with RSSI ");
@@ -66,8 +69,7 @@ int main() {
         tud_task();
         
         if (tud_cdc_n_available(0)) {
-            uint8_t buf[64];
-
+            uint8_t buf[RADIO_MAX_PACKET_SIZE];
             uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
 
             LoRa.beginPacket();
@@ -75,6 +77,11 @@ int main() {
                 LoRa.write(buf[i]);
             }
             LoRa.endPacket();
+        }
+
+        if (received) {
+            putStr((const char*)receivedBuf, 0);
+            received = false;
         }
     }
 }
@@ -113,6 +120,7 @@ void putStr(const char* str, uint8_t printToItf) {
     unsigned int len = strlen(str);
 
     for (int i = 0; i < len; i++) {
+        if (str[i] == '\n') tud_cdc_n_write_char(printToItf, '\r');
         tud_cdc_n_write_char(printToItf, str[i]);
     }
 
