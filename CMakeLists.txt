@@ -32,6 +32,10 @@ add_executable(ground-receiver
         pico-lora/src/Print.cpp
         )
 
+add_compile_definitions(
+        CMAKE_BUILD_TYPE=Debug
+)
+
 pico_set_program_name(ground-receiver "ground-receiver")
 pico_set_program_version(ground-receiver "0.1")
 

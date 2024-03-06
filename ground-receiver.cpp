@@ -69,19 +69,22 @@ int main() {
         tud_task();
         
         if (tud_cdc_n_available(0)) {
-            uint8_t buf[RADIO_MAX_PACKET_SIZE];
+            uint8_t buf[RADIO_MAX_PACKET_SIZE]{};
             uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
 
             LoRa.beginPacket();
             for (int i = 0; i < count; i++) {
                 LoRa.write(buf[i]);
             }
-            LoRa.endPacket();
+            LoRa.endPacket(true);
         }
 
         if (received) {
-            putStr((const char*)receivedBuf, 0);
+            packet_t* packet = (packet_t*)receivedBuf;
+            putStr((const char*)(packet->body), 0);
+            puts("Asdf");
             received = false;
+            LoRa.receive();
         }
     }
 }
