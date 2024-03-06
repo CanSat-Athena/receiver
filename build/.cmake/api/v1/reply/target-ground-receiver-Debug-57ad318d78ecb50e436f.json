@@ -45,7 +45,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 41,
+				"line" : 42,
 				"parent" : 0
 			},
 			{
@@ -66,7 +66,7 @@
 			{
 				"command" : 6,
 				"file" : 0,
-				"line" : 55,
+				"line" : 58,
 				"parent" : 0
 			},
 			{
@@ -98,19 +98,13 @@
 				"parent" : 4
 			},
 			{
-				"command" : 8,
+				"command" : 1,
 				"file" : 0,
-				"line" : 34,
+				"line" : 52,
 				"parent" : 0
 			},
 			{
-				"command" : 7,
-				"file" : 5,
-				"line" : 15,
-				"parent" : 12
-			},
-			{
-				"command" : 9,
+				"command" : 8,
 				"file" : 0,
 				"line" : 35,
 				"parent" : 0
@@ -118,8 +112,20 @@
 			{
 				"command" : 7,
 				"file" : 5,
+				"line" : 15,
+				"parent" : 13
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 36,
+				"parent" : 0
+			},
+			{
+				"command" : 7,
+				"file" : 5,
 				"line" : 33,
-				"parent" : 14
+				"parent" : 15
 			},
 			{
 				"command" : 7,
@@ -130,13 +136,7 @@
 			{
 				"command" : 10,
 				"file" : 0,
-				"line" : 45,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 51,
+				"line" : 46,
 				"parent" : 0
 			}
 		]
@@ -177,11 +177,11 @@
 			"defines" : 
 			[
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "CFG_TUSB_MCU=OPT_MCU_RP2040"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "CFG_TUSB_OS=OPT_OS_PICO"
 				},
 				{
@@ -209,7 +209,7 @@
 					"define" : "LIB_PICO_DOUBLE_PICO=1"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "LIB_PICO_FIX_RP2040_USB_DEVICE_ENUMERATION=1"
 				},
 				{
@@ -270,10 +270,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"define" : "LIB_PICO_STDIO_USB=1"
-				},
-				{
-					"backtrace" : 2,
 					"define" : "LIB_PICO_STDLIB=1"
 				},
 				{
@@ -298,11 +294,15 @@
 				},
 				{
 					"backtrace" : 2,
-					"define" : "LIB_PICO_UNIQUE_ID=1"
+					"define" : "LIB_PICO_UTIL=1"
 				},
 				{
-					"backtrace" : 2,
-					"define" : "LIB_PICO_UTIL=1"
+					"backtrace" : 12,
+					"define" : "LIB_TINYUSB_BOARD=1"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "LIB_TINYUSB_DEVICE=1"
 				},
 				{
 					"backtrace" : 2,
@@ -337,19 +337,19 @@
 					"define" : "PICO_ON_DEVICE=1"
 				},
 				{
-					"backtrace" : 13,
+					"backtrace" : 14,
 					"define" : "PICO_PROGRAM_NAME=\"ground-receiver\""
 				},
 				{
-					"backtrace" : 15,
+					"backtrace" : 16,
 					"define" : "PICO_PROGRAM_VERSION_STRING=\"0.1\""
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "PICO_RP2040_USB_DEVICE_UFRAME_FIX=1"
 				},
 				{
-					"backtrace" : 16,
+					"backtrace" : 17,
 					"define" : "PICO_TARGET_NAME=\"ground-receiver\""
 				},
 				{
@@ -360,11 +360,11 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 17,
+					"backtrace" : 18,
 					"path" : "/home/arca/pico/receiver"
 				},
 				{
-					"backtrace" : 17,
+					"backtrace" : 18,
 					"path" : "/home/arca/pico/receiver/.."
 				},
 				{
@@ -509,22 +509,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_stdio_usb/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_unique_id/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_flash/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/common/pico_usb_reset_interface/include"
-				},
-				{
-					"backtrace" : 2,
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_int64_ops/include"
 				},
 				{
@@ -536,24 +520,24 @@
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/boot_stage2/include"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
+					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/include"
+				},
+				{
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/common"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/hw"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/include"
-				},
-				{
-					"backtrace" : 18,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/include"
 				}
 			],
 			"language" : "CXX",
@@ -568,9 +552,9 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1,
 				2,
-				44
+				3,
+				45
 			]
 		},
 		{
@@ -591,11 +575,11 @@
 			"defines" : 
 			[
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "CFG_TUSB_MCU=OPT_MCU_RP2040"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "CFG_TUSB_OS=OPT_OS_PICO"
 				},
 				{
@@ -623,7 +607,7 @@
 					"define" : "LIB_PICO_DOUBLE_PICO=1"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "LIB_PICO_FIX_RP2040_USB_DEVICE_ENUMERATION=1"
 				},
 				{
@@ -684,10 +668,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"define" : "LIB_PICO_STDIO_USB=1"
-				},
-				{
-					"backtrace" : 2,
 					"define" : "LIB_PICO_STDLIB=1"
 				},
 				{
@@ -712,11 +692,15 @@
 				},
 				{
 					"backtrace" : 2,
-					"define" : "LIB_PICO_UNIQUE_ID=1"
+					"define" : "LIB_PICO_UTIL=1"
 				},
 				{
-					"backtrace" : 2,
-					"define" : "LIB_PICO_UTIL=1"
+					"backtrace" : 12,
+					"define" : "LIB_TINYUSB_BOARD=1"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "LIB_TINYUSB_DEVICE=1"
 				},
 				{
 					"backtrace" : 2,
@@ -751,19 +735,19 @@
 					"define" : "PICO_ON_DEVICE=1"
 				},
 				{
-					"backtrace" : 13,
+					"backtrace" : 14,
 					"define" : "PICO_PROGRAM_NAME=\"ground-receiver\""
 				},
 				{
-					"backtrace" : 15,
+					"backtrace" : 16,
 					"define" : "PICO_PROGRAM_VERSION_STRING=\"0.1\""
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "PICO_RP2040_USB_DEVICE_UFRAME_FIX=1"
 				},
 				{
-					"backtrace" : 16,
+					"backtrace" : 17,
 					"define" : "PICO_TARGET_NAME=\"ground-receiver\""
 				},
 				{
@@ -774,11 +758,11 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 17,
+					"backtrace" : 18,
 					"path" : "/home/arca/pico/receiver"
 				},
 				{
-					"backtrace" : 17,
+					"backtrace" : 18,
 					"path" : "/home/arca/pico/receiver/.."
 				},
 				{
@@ -923,22 +907,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_stdio_usb/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_unique_id/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_flash/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/common/pico_usb_reset_interface/include"
-				},
-				{
-					"backtrace" : 2,
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_int64_ops/include"
 				},
 				{
@@ -950,24 +918,24 @@
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/boot_stage2/include"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
+					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/include"
+				},
+				{
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/common"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/hw"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/include"
-				},
-				{
-					"backtrace" : 18,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/include"
 				}
 			],
 			"language" : "C",
@@ -981,13 +949,13 @@
 			},
 			"sourceIndexes" : 
 			[
-				3,
+				1,
 				4,
 				5,
 				6,
 				7,
 				8,
-				10,
+				9,
 				11,
 				12,
 				13,
@@ -1003,15 +971,15 @@
 				23,
 				24,
 				25,
-				27,
+				26,
 				28,
-				30,
-				33,
+				29,
+				31,
 				34,
-				38,
+				35,
 				39,
-				41,
-				45,
+				40,
+				42,
 				46,
 				47,
 				48,
@@ -1035,10 +1003,7 @@
 				66,
 				67,
 				68,
-				69,
-				70,
-				71,
-				72
+				69
 			]
 		},
 		{
@@ -1059,11 +1024,11 @@
 			"defines" : 
 			[
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "CFG_TUSB_MCU=OPT_MCU_RP2040"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "CFG_TUSB_OS=OPT_OS_PICO"
 				},
 				{
@@ -1091,7 +1056,7 @@
 					"define" : "LIB_PICO_DOUBLE_PICO=1"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "LIB_PICO_FIX_RP2040_USB_DEVICE_ENUMERATION=1"
 				},
 				{
@@ -1152,10 +1117,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"define" : "LIB_PICO_STDIO_USB=1"
-				},
-				{
-					"backtrace" : 2,
 					"define" : "LIB_PICO_STDLIB=1"
 				},
 				{
@@ -1180,11 +1141,15 @@
 				},
 				{
 					"backtrace" : 2,
-					"define" : "LIB_PICO_UNIQUE_ID=1"
+					"define" : "LIB_PICO_UTIL=1"
 				},
 				{
-					"backtrace" : 2,
-					"define" : "LIB_PICO_UTIL=1"
+					"backtrace" : 12,
+					"define" : "LIB_TINYUSB_BOARD=1"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "LIB_TINYUSB_DEVICE=1"
 				},
 				{
 					"backtrace" : 2,
@@ -1219,19 +1184,19 @@
 					"define" : "PICO_ON_DEVICE=1"
 				},
 				{
-					"backtrace" : 13,
+					"backtrace" : 14,
 					"define" : "PICO_PROGRAM_NAME=\"ground-receiver\""
 				},
 				{
-					"backtrace" : 15,
+					"backtrace" : 16,
 					"define" : "PICO_PROGRAM_VERSION_STRING=\"0.1\""
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"define" : "PICO_RP2040_USB_DEVICE_UFRAME_FIX=1"
 				},
 				{
-					"backtrace" : 16,
+					"backtrace" : 17,
 					"define" : "PICO_TARGET_NAME=\"ground-receiver\""
 				},
 				{
@@ -1242,11 +1207,11 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 17,
+					"backtrace" : 18,
 					"path" : "/home/arca/pico/receiver"
 				},
 				{
-					"backtrace" : 17,
+					"backtrace" : 18,
 					"path" : "/home/arca/pico/receiver/.."
 				},
 				{
@@ -1391,22 +1356,6 @@
 				},
 				{
 					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_stdio_usb/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_unique_id/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_flash/include"
-				},
-				{
-					"backtrace" : 2,
-					"path" : "/home/arca/pico/pico-sdk/src/common/pico_usb_reset_interface/include"
-				},
-				{
-					"backtrace" : 2,
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_int64_ops/include"
 				},
 				{
@@ -1418,40 +1367,40 @@
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/boot_stage2/include"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
+					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/include"
+				},
+				{
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/common"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/hw"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 12,
 					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/include"
-				},
-				{
-					"backtrace" : 18,
-					"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/include"
 				}
 			],
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				9,
-				26,
-				29,
-				31,
+				10,
+				27,
+				30,
 				32,
-				35,
+				33,
 				36,
 				37,
-				40,
-				42,
-				43
+				38,
+				41,
+				43,
+				44
 			]
 		}
 	],
@@ -2329,7 +2278,7 @@
 				6,
 				7,
 				8,
-				10,
+				9,
 				11,
 				12,
 				13,
@@ -2345,15 +2294,15 @@
 				23,
 				24,
 				25,
-				27,
+				26,
 				28,
-				30,
-				33,
+				29,
+				31,
 				34,
-				38,
+				35,
 				39,
-				41,
-				44,
+				40,
+				42,
 				45,
 				46,
 				47,
@@ -2378,27 +2327,24 @@
 				66,
 				67,
 				68,
-				69,
-				70,
-				71,
-				72
+				69
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				9,
-				26,
-				29,
-				31,
+				10,
+				27,
+				30,
 				32,
-				35,
+				33,
 				36,
 				37,
-				40,
-				42,
-				43
+				38,
+				41,
+				43,
+				44
 			]
 		}
 	],
@@ -2408,6 +2354,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "ground-receiver.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "usb_descriptors.c",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -2693,153 +2645,129 @@
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
-			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_stdio_usb/reset_interface.c",
+			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/spi.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
-			"compileGroupIndex" : 1,
-			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_stdio_usb/stdio_usb.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 2,
-			"compileGroupIndex" : 1,
-			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_stdio_usb/stdio_usb_descriptors.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 2,
-			"compileGroupIndex" : 1,
-			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 2,
-			"compileGroupIndex" : 1,
-			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_flash/flash.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/device/usbd.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/device/usbd_control.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/audio/audio_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/cdc/cdc_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/dfu/dfu_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/dfu/dfu_rt_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/hid/hid_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/midi/midi_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/msc/msc_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/net/ecm_rndis_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/net/ncm_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/usbtmc/usbtmc_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/vendor/vendor_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/class/video/video_device.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/tusb.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/src/common/tusb_fifo.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
 			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 18,
+			"backtrace" : 12,
 			"compileGroupIndex" : 1,
-			"path" : "/home/arca/pico/pico-sdk/src/rp2_common/hardware_spi/spi.c",
+			"path" : "/home/arca/pico/pico-sdk/lib/tinyusb/hw/bsp/rp2040/family.c",
 			"sourceGroupIndex" : 0
 		}
 	],

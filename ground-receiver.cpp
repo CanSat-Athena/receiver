@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <ctype.h>
 #include "pico/stdlib.h"
 #include "pico-lora/src/LoRa-RP2040.h"
+#include "tusb.h"
+#include "bsp/board.h"
 
 #include "config.h"
 #include "CanSat/src/commonTypes.h"
@@ -10,6 +13,8 @@
 const uint attempts = 3;
 
 void initLoRa();
+void putStr(const char* str, uint8_t printToItf = 0);
+void putChar(const char c, uint8_t printToItf = 0);
 
 // for (uint8_t i = 0; i < 3; i++) {
 //     accel_g[i] = (float)accel_raw[i] / (16384.0f / 1);
@@ -27,7 +32,7 @@ void onReceive(int packetSize) {
     for (int i = 0; i < packetSize; i++) {
         char c = LoRa.read();
         if (i > 0)
-            printf("%c", c);
+            putStr("%c", c);
     }
 
     // print RSSI of packet
@@ -37,10 +42,13 @@ void onReceive(int packetSize) {
 
 int main() {
     stdio_init_all();
+    board_init();
 
-    sleep_ms(1000);
+    // init device stack on configured roothub port
+    tud_init(BOARD_TUD_RHPORT);
+    // tusb_init();
 
-    puts("Hello, world!");
+    sleep_ms(2000);
 
     // Set pins and initialise LoRa
     LoRa.setPins(RADIO_NSS_PIN, RADIO_RESET_PIN, RADIO_DIO0_PIN);
@@ -48,42 +56,70 @@ int main() {
 
     LoRa.onReceive(onReceive);
     LoRa.receive();
+
     while (true) {
-        sleep_ms(5000);
-        printf("Writing\n");
-        LoRa.beginPacket();
-        LoRa.write((const uint8_t*)"asdf", 4);
-        LoRa.endPacket();
-        LoRa.receive();
+        // putStr("Writing\n");
+        // LoRa.beginPacket();
+        // LoRa.write((const uint8_t*)"asdf", 4);
+        // LoRa.endPacket();
+        // LoRa.receive();
+        tud_task();
+        
+        if (tud_cdc_n_available(0)) {
+            uint8_t buf[64];
+
+            uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
+
+            LoRa.beginPacket();
+            for (int i = 0; i < count; i++) {
+                LoRa.write(buf[i]);
+            }
+            LoRa.endPacket();
+        }
     }
 }
 
 void initLoRa() {
     for (int i = 0; i < attempts; i++) {
-        printf("Radio:      Trying to connect, attempt %d of %d\n", i + 1, attempts);
+        puts("Radio:      Trying to connect");
 
         int result = LoRa.begin(433000000);
 
         // Re-attempt if failed
         if (result != 1) {
-            printf("Radio:      Failed to connect\n");
-            sleep_ms(2000);
+            puts("Radio:      Failed to connect");
+            sleep_ms(5000);
 
             if (i < attempts - 1)
-                printf("Radio:      Retrying...\n");
+                puts("Radio:      Retrying...");
             else {
-                printf("Radio:      Failed to initialise\n");
+                puts("Radio:      Failed to initialise");
                 while (true);
             }
 
             continue;
         }
 
-        printf("Radio:      Initialised successfully\n");
+        puts("Radio:      Initialised successfully");
         LoRa.enableCrc();
         LoRa.setSignalBandwidth(RADIO_BANDWIDTH);
         LoRa.setSpreadingFactor(RADIO_SPREAD_FACTOR);
 
         return;
     }
+}
+
+void putStr(const char* str, uint8_t printToItf) {
+    unsigned int len = strlen(str);
+
+    for (int i = 0; i < len; i++) {
+        tud_cdc_n_write_char(printToItf, str[i]);
+    }
+
+    tud_cdc_n_write_flush(printToItf);
+}
+
+void putChar(const char c, uint8_t printToItf) {
+    tud_cdc_n_write_char(printToItf, c);
+    tud_cdc_n_write_flush(printToItf);
 }

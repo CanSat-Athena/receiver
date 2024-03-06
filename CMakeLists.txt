@@ -27,6 +27,7 @@ pico_sdk_init()
 
 add_executable(ground-receiver
         ground-receiver.cpp
+        usb_descriptors.c
         pico-lora/src/LoRa-RP2040.cpp
         pico-lora/src/Print.cpp
         )
@@ -35,7 +36,7 @@ pico_set_program_name(ground-receiver "ground-receiver")
 pico_set_program_version(ground-receiver "0.1")
 
 pico_enable_stdio_uart(ground-receiver 1)
-pico_enable_stdio_usb(ground-receiver 1)
+pico_enable_stdio_usb(ground-receiver 0)
 
 # Add the standard library to the build
 target_link_libraries(ground-receiver
@@ -50,6 +51,8 @@ target_include_directories(ground-receiver PRIVATE
 # Add any user requested libraries
 target_link_libraries(ground-receiver 
         hardware_spi
+        tinyusb_device
+        tinyusb_board
         )
 
 pico_add_extra_outputs(ground-receiver)

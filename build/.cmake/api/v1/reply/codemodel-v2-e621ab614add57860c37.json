@@ -1151,7 +1151,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ELF2UF2Build::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ELF2UF2Build-Debug-bcf847f2abf18e6a7a2f.json",
+					"jsonFile" : "target-ELF2UF2Build-Debug-99872291f698a6135a12.json",
 					"name" : "ELF2UF2Build",
 					"projectIndex" : 0
 				},
@@ -1193,7 +1193,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ground-receiver::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ground-receiver-Debug-47b3146c359d2779bf92.json",
+					"jsonFile" : "target-ground-receiver-Debug-57ad318d78ecb50e436f.json",
 					"name" : "ground-receiver",
 					"projectIndex" : 0
 				}
