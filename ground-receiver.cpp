@@ -12,10 +12,12 @@
 // Global vars
 const uint attempts = 3;
 volatile bool received = false;
+volatile unsigned int receivedPacketLen = 0;
 volatile char receivedBuf[RADIO_MAX_PACKET_SIZE + 1];
 
 void initLoRa();
 void putStr(const char* str, uint8_t printToItf = 0);
+void putnStr(const char* str, unsigned int n, uint8_t printToItf = 0);
 void putChar(const char c, uint8_t printToItf = 0);
 
 // for (uint8_t i = 0; i < 3; i++) {
@@ -37,6 +39,8 @@ void onReceive(int packetSize) {
         receivedBuf[i] = LoRa.read();
     }
     receivedBuf[packetSize] = '\0';
+
+    receivedPacketLen = packetSize;
 
     // print RSSI of packet
     // printf("' with RSSI ");
@@ -67,8 +71,12 @@ int main() {
         // LoRa.endPacket();
         // LoRa.receive();
         tud_task();
-        
+
         if (tud_cdc_n_available(0)) {
+            if (LoRa.beginPacket() == 0) {
+                continue;
+            }
+
             uint8_t buf[RADIO_MAX_PACKET_SIZE]{};
             uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
 
@@ -77,14 +85,14 @@ int main() {
                 LoRa.write(buf[i]);
             }
             LoRa.endPacket(true);
+            LoRa.receive();
         }
 
         if (received) {
             packet_t* packet = (packet_t*)receivedBuf;
-            putStr((const char*)(packet->body), 0);
+            putnStr((const char*)(packet->body), receivedPacketLen - 1, 0);
             puts("Asdf");
             received = false;
-            LoRa.receive();
         }
     }
 }
@@ -121,6 +129,17 @@ void initLoRa() {
 
 void putStr(const char* str, uint8_t printToItf) {
     unsigned int len = strlen(str);
+
+    for (int i = 0; i < len; i++) {
+        if (str[i] == '\n') tud_cdc_n_write_char(printToItf, '\r');
+        tud_cdc_n_write_char(printToItf, str[i]);
+    }
+
+    tud_cdc_n_write_flush(printToItf);
+}
+
+void putnStr(const char* str, unsigned int n, uint8_t printToItf) {
+    unsigned int len = n;
 
     for (int i = 0; i < len; i++) {
         if (str[i] == '\n') tud_cdc_n_write_char(printToItf, '\r');
