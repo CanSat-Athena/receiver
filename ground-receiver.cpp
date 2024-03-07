@@ -4,21 +4,28 @@
 #include "pico-lora/src/LoRa-RP2040.h"
 #include "tusb.h"
 #include "bsp/board.h"
+#include "pico/util/queue.h"
 
 #include "config.h"
 #include "CanSat/src/commonTypes.h"
 #include "CanSat/src/config.h"
 
+typedef struct packetGround_t {
+    packet_t packet;
+    int bodySize;
+    int rssi;
+} packetGround_t;
+
 // Global vars
 const uint attempts = 3;
-volatile bool received = false;
-volatile unsigned int receivedPacketLen = 0;
-volatile char receivedBuf[RADIO_MAX_PACKET_SIZE + 1];
+packetGround_t receivedPacket;
+queue_t receiveQueue;
 
 void initLoRa();
 void putStr(const char* str, uint8_t printToItf = 0);
 void putnStr(const char* str, unsigned int n, uint8_t printToItf = 0);
 void putChar(const char c, uint8_t printToItf = 0);
+void handleDataPacket(packet_t body);
 
 // for (uint8_t i = 0; i < 3; i++) {
 //     accel_g[i] = (float)accel_raw[i] / (16384.0f / 1);
@@ -27,24 +34,18 @@ void putChar(const char c, uint8_t printToItf = 0);
 // }
 
 void onReceive(int packetSize) {
-    // Read type
-    // char type = LoRa.read();
-
-    // if (type != 't') putchar(type);
-
     // Read packet
-    received = true;
+    char* packet = (char*)(&(receivedPacket.packet));
 
     for (int i = 0; i < packetSize; i++) {
-        receivedBuf[i] = LoRa.read();
+        packet[i] = LoRa.read();
     }
-    receivedBuf[packetSize] = '\0';
+    // receivedPacket.packet.body[packetSize - 1] = '\0'; // -1 because packet type
 
-    receivedPacketLen = packetSize;
+    receivedPacket.bodySize = packetSize - 1;
+    receivedPacket.rssi = LoRa.packetRssi();
 
-    // print RSSI of packet
-    // printf("' with RSSI ");
-    // printf("%d\n", LoRa.packetRssi());
+    queue_try_add(&receiveQueue, &receivedPacket);
 }
 
 int main() {
@@ -53,6 +54,7 @@ int main() {
 
     // init device stack on configured roothub port
     tud_init(BOARD_TUD_RHPORT);
+    queue_init(&receiveQueue, sizeof(packetGround_t), 10);
     // tusb_init();
 
     sleep_ms(2000);
@@ -63,6 +65,8 @@ int main() {
 
     LoRa.onReceive(onReceive);
     LoRa.receive();
+
+    packetGround_t packet;
 
     while (true) {
         // putStr("Writing\n");
@@ -88,13 +92,18 @@ int main() {
             LoRa.receive();
         }
 
-        if (received) {
-            packet_t* packet = (packet_t*)receivedBuf;
-            putnStr((const char*)(packet->body), receivedPacketLen - 1, 0);
-            puts("Asdf");
-            received = false;
+        if (queue_try_remove(&receiveQueue, &packet)) {
+            if (packet.packet.type == 't')
+                putnStr((const char*)packet.packet.body, packet.bodySize, 0);
+            else if (packet.packet.type == 'd')
+                putStr("Asdf");
+            LoRa.receive();
         }
     }
+}
+
+void handleDataPacket(packet_t body) {
+    
 }
 
 void initLoRa() {

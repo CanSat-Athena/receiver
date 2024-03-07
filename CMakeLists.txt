@@ -55,6 +55,7 @@ target_include_directories(ground-receiver PRIVATE
 # Add any user requested libraries
 target_link_libraries(ground-receiver 
         hardware_spi
+        pico_util
         tinyusb_device
         tinyusb_board
         )
