@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include "pico/stdlib.h"
 #include "pico-lora/src/LoRa-RP2040.h"
 #include "tusb.h"
@@ -25,6 +26,7 @@ void initLoRa();
 void putStr(const char* str, uint8_t printToItf = 0);
 void putnStr(const char* str, unsigned int n, uint8_t printToItf = 0);
 void putChar(const char c, uint8_t printToItf = 0);
+void usbPrintf(uint8_t printToItf, const char* str, ...);
 void handleDataPacket(packet_t body);
 
 // for (uint8_t i = 0; i < 3; i++) {
@@ -95,15 +97,70 @@ int main() {
         if (queue_try_remove(&receiveQueue, &packet)) {
             if (packet.packet.type == 't')
                 putnStr((const char*)packet.packet.body, packet.bodySize, 0);
-            else if (packet.packet.type == 'd')
-                putStr("Asdf");
+            else if (packet.packet.type == 'd' || packet.packet.type == 'p')
+                handleDataPacket(packet.packet);
             LoRa.receive();
         }
     }
 }
 
-void handleDataPacket(packet_t body) {
-    
+void handleDataPacket(packet_t packet) {
+    usbPrintf(1, "%u:", line.timestamp);
+
+        // Get DHT20 data
+        usbPrintf(1, "[");
+        for (int i = 0; i < DHT20_READ_FREQ; i++) {
+            usbPrintf(1, "[%f,%f]", line.dht20[i].temperature, line.dht20[i].humidity);
+        }
+        usbPrintf(1, "]");
+
+        // Get BME680 data
+        usbPrintf(1, "[");
+        for (int i = 0; i < BME680_READ_FREQ; i++) {
+            usbPrintf(1, "[%f,%f,%f,%f]",
+                line.bme680[i].temperature,
+                line.bme680[i].humidity,
+                line.bme680[i].pressure,
+                line.bme680[i].gasResistance
+            );
+        }
+        usbPrintf(1, "]");
+
+        // Get IMU data
+        usbPrintf(1, "[");
+        for (int i = 0; i < IMU_READ_FREQ; i++) {
+            usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
+                line.imu[i].accel[0], line.imu[i].accel[1], line.imu[i].accel[2],
+                line.imu[i].gyro[0], line.imu[i].gyro[1], line.imu[i].gyro[2],
+                line.imu[i].mag[0], line.imu[i].mag[1], line.imu[i].mag[2]
+            );
+        }
+        usbPrintf(1, "]");
+
+        // Get light data
+        usbPrintf(1, "[");
+        for (int i = 0; i < LIGHT_READ_FREQ; i++) {
+            usbPrintf(1, "%u,", line.lightData[i].lightIntensity);
+        }
+        usbPrintf(1, "]");
+
+        // Get anemometer data
+        usbPrintf(1, "[");
+        for (int i = 0; i < ANEMOMETER_READ_FREQ; i++) {
+            usbPrintf(1, "%u,", line.anemometerData[i].triggerCount);
+        }
+        usbPrintf(1, "]");
+
+        // Get GPS data
+        usbPrintf(1, "[");
+        usbPrintf(1, "%f,%f,%f,%d,%d,%d,%u", line.gpsData[0].latitude, line.gpsData[0].longitude, line.gpsData[0].altitude,
+            line.gpsData[0].hours, line.gpsData[0].minutes, line.gpsData[0].seconds, line.gpsData[0].fix);
+        usbPrintf(1, "]");
+
+        usbPrintf(1, "\n");
+    if (packet.type == 'd') {
+
+    }
 }
 
 void initLoRa() {
@@ -145,6 +202,19 @@ void putStr(const char* str, uint8_t printToItf) {
     }
 
     tud_cdc_n_write_flush(printToItf);
+}
+
+void usbPrintf(uint8_t printToItf, const char* str, ...) {
+    va_list args;
+    va_start(args, str);     // Very important
+
+    char buffer[TERMINAL_BUFFER_SIZE];
+    vsnprintf(buffer, TERMINAL_BUFFER_SIZE - 1, str, args);  // -1 just to be safe
+    buffer[TERMINAL_BUFFER_SIZE - 1] = '\0';                    // Prevent memory leak, just in case
+
+    putStr(buffer, printToItf);
+
+    va_end(args);
 }
 
 void putnStr(const char* str, unsigned int n, uint8_t printToItf) {
