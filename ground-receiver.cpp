@@ -19,7 +19,7 @@ typedef struct packetGround_t {
 
 // Global vars
 const uint attempts = 3;
-packetGround_t receivedPacket;
+volatile packetGround_t receivedPacket;
 queue_t receiveQueue;
 
 void initLoRa();
@@ -37,17 +37,20 @@ void handleDataPacket(packet_t body);
 
 void onReceive(int packetSize) {
     // Read packet
-    char* packet = (char*)(&(receivedPacket.packet));
+    // char* packet = (char*)(&(receivedPacket.packet));
 
     for (int i = 0; i < packetSize; i++) {
-        packet[i] = LoRa.read();
+        if (i > 0)
+            receivedPacket.packet.body[i - 1] = LoRa.read();
+        else
+            receivedPacket.packet.type = LoRa.read();
     }
     // receivedPacket.packet.body[packetSize - 1] = '\0'; // -1 because packet type
 
     receivedPacket.bodySize = packetSize - 1;
     receivedPacket.rssi = LoRa.packetRssi();
 
-    queue_try_add(&receiveQueue, &receivedPacket);
+    queue_try_add(&receiveQueue, (const void*)&receivedPacket);
 }
 
 int main() {
@@ -68,7 +71,7 @@ int main() {
     LoRa.onReceive(onReceive);
     LoRa.receive();
 
-    packetGround_t packet;
+    // packetGround_t packet{};
 
     while (true) {
         // putStr("Writing\n");
@@ -94,70 +97,73 @@ int main() {
             LoRa.receive();
         }
 
+        packetGround_t packet{};
         if (queue_try_remove(&receiveQueue, &packet)) {
             if (packet.packet.type == 't')
                 putnStr((const char*)packet.packet.body, packet.bodySize, 0);
             else if (packet.packet.type == 'd' || packet.packet.type == 'p')
                 handleDataPacket(packet.packet);
-            LoRa.receive();
         }
     }
-}
+} 
 
 void handleDataPacket(packet_t packet) {
-    usbPrintf(1, "%u:", line.timestamp);
+    // dataRadioLine_t* pReceivedLine = (dataRadioLine_t*)packet.body;
+    dataRadioLine_t& receivedLine = (dataRadioLine_t&)packet.body;
 
-        // Get DHT20 data
-        usbPrintf(1, "[");
-        for (int i = 0; i < DHT20_READ_FREQ; i++) {
-            usbPrintf(1, "[%f,%f]", line.dht20[i].temperature, line.dht20[i].humidity);
-        }
-        usbPrintf(1, "]");
+    usbPrintf(1, "%u:", receivedLine.timestamp);
 
-        // Get BME680 data
-        usbPrintf(1, "[");
-        for (int i = 0; i < BME680_READ_FREQ; i++) {
-            usbPrintf(1, "[%f,%f,%f,%f]",
-                line.bme680[i].temperature,
-                line.bme680[i].humidity,
-                line.bme680[i].pressure,
-                line.bme680[i].gasResistance
-            );
-        }
-        usbPrintf(1, "]");
+    // Get DHT20 data
+    usbPrintf(1, "[");
+    for (int i = 0; i < DHT20_READ_FREQ; i++) {
+        usbPrintf(1, "[%f,%f]", receivedLine.dht20[i].temperature, receivedLine.dht20[i].humidity);
+    }
+    usbPrintf(1, "]");
 
-        // Get IMU data
-        usbPrintf(1, "[");
-        for (int i = 0; i < IMU_READ_FREQ; i++) {
-            usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
-                line.imu[i].accel[0], line.imu[i].accel[1], line.imu[i].accel[2],
-                line.imu[i].gyro[0], line.imu[i].gyro[1], line.imu[i].gyro[2],
-                line.imu[i].mag[0], line.imu[i].mag[1], line.imu[i].mag[2]
-            );
-        }
-        usbPrintf(1, "]");
+    // // Get BME680 data
+    // usbPrintf(1, "[");
+    // for (int i = 0; i < BME680_READ_FREQ; i++) {
+    //     usbPrintf(1, "[%f,%f,%f,%f]",
+    //         receivedLine.bme680[i].temperature,
+    //         receivedLine.bme680[i].humidity,
+    //         receivedLine.bme680[i].pressure,
+    //         receivedLine.bme680[i].gasResistance
+    //     );
+    // }
+    // usbPrintf(1, "]");
 
-        // Get light data
-        usbPrintf(1, "[");
-        for (int i = 0; i < LIGHT_READ_FREQ; i++) {
-            usbPrintf(1, "%u,", line.lightData[i].lightIntensity);
-        }
-        usbPrintf(1, "]");
+    // // Get IMU data
+    // usbPrintf(1, "[");
+    // for (int i = 0; i < IMU_READ_FREQ; i++) {
+    //     usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
+    //         receivedLine.imu[i].accel[0], receivedLine.imu[i].accel[1], receivedLine.imu[i].accel[2],
+    //         receivedLine.imu[i].gyro[0], receivedLine.imu[i].gyro[1], receivedLine.imu[i].gyro[2],
+    //         receivedLine.imu[i].mag[0], receivedLine.imu[i].mag[1], receivedLine.imu[i].mag[2]
+    //     );
+    // }
+    // usbPrintf(1, "]");
 
-        // Get anemometer data
-        usbPrintf(1, "[");
-        for (int i = 0; i < ANEMOMETER_READ_FREQ; i++) {
-            usbPrintf(1, "%u,", line.anemometerData[i].triggerCount);
-        }
-        usbPrintf(1, "]");
+    // // Get light data
+    // usbPrintf(1, "[");
+    // for (int i = 0; i < LIGHT_READ_FREQ; i++) {
+    //     usbPrintf(1, "%u,", receivedLine.lightData[i].lightIntensity);
+    // }
+    // usbPrintf(1, "]");
 
-        // Get GPS data
-        usbPrintf(1, "[");
-        usbPrintf(1, "%f,%f,%f,%d,%d,%d,%u", line.gpsData[0].latitude, line.gpsData[0].longitude, line.gpsData[0].altitude,
-            line.gpsData[0].hours, line.gpsData[0].minutes, line.gpsData[0].seconds, line.gpsData[0].fix);
-        usbPrintf(1, "]");
+    // // Get anemometer data
+    // usbPrintf(1, "[");
+    // for (int i = 0; i < ANEMOMETER_READ_FREQ; i++) {
+    //     usbPrintf(1, "%u,", receivedLine.anemometerData[i].triggerCount);
+    // }
+    // usbPrintf(1, "]");
 
-        usbPrintf(1, "\n");
+    // // Get GPS data
+    // usbPrintf(1, "[");
+    // usbPrintf(1, "%f,%f,%f,%d,%d,%d,%u", receivedLine.gpsData[0].latitude, receivedLine.gpsData[0].longitude, receivedLine.gpsData[0].altitude,
+    //     receivedLine.gpsData[0].hours, receivedLine.gpsData[0].minutes, receivedLine.gpsData[0].seconds, receivedLine.gpsData[0].fix);
+    // usbPrintf(1, "]");
+
+    usbPrintf(1, "\n");
     if (packet.type == 'd') {
 
     }
