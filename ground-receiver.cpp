@@ -19,7 +19,6 @@ typedef struct packetGround_t {
 
 // Global vars
 const uint attempts = 3;
-volatile packetGround_t receivedPacket;
 queue_t receiveQueue;
 
 void initLoRa();
@@ -37,13 +36,15 @@ void handleDataPacket(packet_t body);
 
 void onReceive(int packetSize) {
     // Read packet
+    packetGround_t receivedPacket{};
     // char* packet = (char*)(&(receivedPacket.packet));
 
     for (int i = 0; i < packetSize; i++) {
-        if (i > 0)
+        if (i > 0) {
             receivedPacket.packet.body[i - 1] = LoRa.read();
-        else
+        } else {
             receivedPacket.packet.type = LoRa.read();
+        }
     }
     // receivedPacket.packet.body[packetSize - 1] = '\0'; // -1 because packet type
 
@@ -60,7 +61,6 @@ int main() {
     // init device stack on configured roothub port
     tud_init(BOARD_TUD_RHPORT);
     queue_init(&receiveQueue, sizeof(packetGround_t), 10);
-    // tusb_init();
 
     sleep_ms(2000);
 
@@ -101,17 +101,18 @@ int main() {
         if (queue_try_remove(&receiveQueue, &packet)) {
             if (packet.packet.type == 't')
                 putnStr((const char*)packet.packet.body, packet.bodySize, 0);
-            else if (packet.packet.type == 'd' || packet.packet.type == 'p')
-                handleDataPacket(packet.packet);
+            else if (packet.packet.type == 'd')
+                putnStr((const char*)packet.packet.body, packet.bodySize, 1);
         }
     }
-} 
+}
 
 void handleDataPacket(packet_t packet) {
     // dataRadioLine_t* pReceivedLine = (dataRadioLine_t*)packet.body;
     dataRadioLine_t& receivedLine = (dataRadioLine_t&)packet.body;
+    // int port = packet.type == 't' ? 
 
-    usbPrintf(1, "%u:", receivedLine.timestamp);
+    usbPrintf(1, "%u: ", receivedLine.timestamp);
 
     // Get DHT20 data
     usbPrintf(1, "[");
@@ -120,19 +121,19 @@ void handleDataPacket(packet_t packet) {
     }
     usbPrintf(1, "]");
 
-    // // Get BME680 data
-    // usbPrintf(1, "[");
-    // for (int i = 0; i < BME680_READ_FREQ; i++) {
-    //     usbPrintf(1, "[%f,%f,%f,%f]",
-    //         receivedLine.bme680[i].temperature,
-    //         receivedLine.bme680[i].humidity,
-    //         receivedLine.bme680[i].pressure,
-    //         receivedLine.bme680[i].gasResistance
-    //     );
-    // }
-    // usbPrintf(1, "]");
+    // Get BME680 data
+    usbPrintf(1, "[");
+    for (int i = 0; i < BME680_READ_FREQ; i++) {
+        usbPrintf(1, "[%f,%f,%f,%f]",
+            receivedLine.bme680[i].temperature,
+            receivedLine.bme680[i].humidity,
+            receivedLine.bme680[i].pressure,
+            receivedLine.bme680[i].gasResistance
+        );
+    }
+    usbPrintf(1, "]");
 
-    // // Get IMU data
+    // Get IMU data
     // usbPrintf(1, "[");
     // for (int i = 0; i < IMU_READ_FREQ; i++) {
     //     usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
