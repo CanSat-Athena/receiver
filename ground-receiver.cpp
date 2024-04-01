@@ -13,7 +13,6 @@
 
 typedef struct packetGround_t {
     packet_t packet;
-    int bodySize;
     int rssi;
 } packetGround_t;
 
@@ -26,7 +25,7 @@ void putStr(const char* str, uint8_t printToItf = 0);
 void putnStr(const char* str, unsigned int n, uint8_t printToItf = 0);
 void putChar(const char c, uint8_t printToItf = 0);
 void usbPrintf(uint8_t printToItf, const char* str, ...);
-void handleDataPacket(packet_t body);
+void handleDataPacket(packetGround_t body);
 
 // for (uint8_t i = 0; i < 3; i++) {
 //     accel_g[i] = (float)accel_raw[i] / (16384.0f / 1);
@@ -39,16 +38,14 @@ void onReceive(int packetSize) {
     packetGround_t receivedPacket{};
     // char* packet = (char*)(&(receivedPacket.packet));
 
-    for (int i = 0; i < packetSize; i++) {
-        if (i > 0) {
-            receivedPacket.packet.body[i - 1] = LoRa.read();
-        } else {
-            receivedPacket.packet.type = LoRa.read();
-        }
+    receivedPacket.packet.type = LoRa.read();
+    receivedPacket.packet.size = LoRa.read();
+
+    for (int i = 0; i < packetSize - (sizeof(receivedPacket.packet.type) + sizeof(receivedPacket.packet.size)); i++) {
+        receivedPacket.packet.body[i] = LoRa.read();
     }
     // receivedPacket.packet.body[packetSize - 1] = '\0'; // -1 because packet type
 
-    receivedPacket.bodySize = packetSize - 1;
     receivedPacket.rssi = LoRa.packetRssi();
 
     queue_try_add(&receiveQueue, (const void*)&receivedPacket);
@@ -76,7 +73,7 @@ int main() {
     while (true) {
         // putStr("Writing\n");
         // LoRa.beginPacket();
-        // LoRa.write((const uint8_t*)"asdf", 4);
+        // LoRa.write((const uint8_t*)"a", 4);
         // LoRa.endPacket();
         // LoRa.receive();
         tud_task();
@@ -99,17 +96,18 @@ int main() {
 
         packetGround_t packet{};
         if (queue_try_remove(&receiveQueue, &packet)) {
-            if (packet.packet.type == 't')
-                putnStr((const char*)packet.packet.body, packet.bodySize, 0);
-            else if (packet.packet.type == 'd')
-                putnStr((const char*)packet.packet.body, packet.bodySize, 1);
+            if (packet.packet.type == 't') {
+                putnStr((const char*)packet.packet.body, packet.packet.size, 0);
+                tud_task();
+            } else if (packet.packet.type == 'd')
+                handleDataPacket(packet);    //putnStr((const char*)packet.packet.body, packet.packet.size, 1);
         }
     }
 }
 
-void handleDataPacket(packet_t packet) {
+void handleDataPacket(packetGround_t packet) {
     // dataRadioLine_t* pReceivedLine = (dataRadioLine_t*)packet.body;
-    dataRadioLine_t& receivedLine = (dataRadioLine_t&)packet.body;
+    dataRadioLine_t& receivedLine = (dataRadioLine_t&)packet.packet.body;
     // int port = packet.type == 't' ? 
 
     usbPrintf(1, "%u: ", receivedLine.timestamp);
@@ -120,6 +118,7 @@ void handleDataPacket(packet_t packet) {
         usbPrintf(1, "[%f,%f]", receivedLine.dht20[i].temperature, receivedLine.dht20[i].humidity);
     }
     usbPrintf(1, "]");
+    tud_task();
 
     // Get BME680 data
     usbPrintf(1, "[");
@@ -132,8 +131,9 @@ void handleDataPacket(packet_t packet) {
         );
     }
     usbPrintf(1, "]");
+    tud_task();
 
-    // Get IMU data
+    // // Get IMU data
     // usbPrintf(1, "[");
     // for (int i = 0; i < IMU_READ_FREQ; i++) {
     //     usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
@@ -141,31 +141,41 @@ void handleDataPacket(packet_t packet) {
     //         receivedLine.imu[i].gyro[0], receivedLine.imu[i].gyro[1], receivedLine.imu[i].gyro[2],
     //         receivedLine.imu[i].mag[0], receivedLine.imu[i].mag[1], receivedLine.imu[i].mag[2]
     //     );
+    //     tud_task();
     // }
     // usbPrintf(1, "]");
 
-    // // Get light data
-    // usbPrintf(1, "[");
-    // for (int i = 0; i < LIGHT_READ_FREQ; i++) {
-    //     usbPrintf(1, "%u,", receivedLine.lightData[i].lightIntensity);
-    // }
-    // usbPrintf(1, "]");
+    // Get light data
+    usbPrintf(1, "[");
+    for (int i = 0; i < LIGHT_READ_FREQ; i++) {
+        usbPrintf(1, "%u,", receivedLine.lightData[i].lightIntensity);
+    }
+    usbPrintf(1, "]");
+    tud_task();
 
-    // // Get anemometer data
-    // usbPrintf(1, "[");
-    // for (int i = 0; i < ANEMOMETER_READ_FREQ; i++) {
-    //     usbPrintf(1, "%u,", receivedLine.anemometerData[i].triggerCount);
-    // }
-    // usbPrintf(1, "]");
+    // Get anemometer data
+    usbPrintf(1, "[");
+    for (int i = 0; i < ANEMOMETER_READ_FREQ; i++) {
+        usbPrintf(1, "%u,", receivedLine.anemometerData[i].triggerCount);
+    }
+    usbPrintf(1, "]");
+    tud_task();
 
-    // // Get GPS data
-    // usbPrintf(1, "[");
-    // usbPrintf(1, "%f,%f,%f,%d,%d,%d,%u", receivedLine.gpsData[0].latitude, receivedLine.gpsData[0].longitude, receivedLine.gpsData[0].altitude,
-    //     receivedLine.gpsData[0].hours, receivedLine.gpsData[0].minutes, receivedLine.gpsData[0].seconds, receivedLine.gpsData[0].fix);
-    // usbPrintf(1, "]");
+    // Get GPS data
+    usbPrintf(1, "[");
+    usbPrintf(1, "%f,%f,%f,%d,%d,%d,%u", receivedLine.gpsData[0].latitude, receivedLine.gpsData[0].longitude, receivedLine.gpsData[0].altitude,
+        receivedLine.gpsData[0].hours, receivedLine.gpsData[0].minutes, receivedLine.gpsData[0].seconds, receivedLine.gpsData[0].fix);
+    usbPrintf(1, "]");
+    tud_task();
+
+    // Get RSSI
+    usbPrintf(1, "[");
+    usbPrintf(1, "%d", packet.rssi);
+    usbPrintf(1, "]");
+    tud_task();
 
     usbPrintf(1, "\n");
-    if (packet.type == 'd') {
+    if (packet.packet.type == 'd') {
 
     }
 }
@@ -195,6 +205,8 @@ void initLoRa() {
         LoRa.enableCrc();
         LoRa.setSignalBandwidth(RADIO_BANDWIDTH);
         LoRa.setSpreadingFactor(RADIO_SPREAD_FACTOR);
+        LoRa.setCodingRate4(RADIO_CODING_RATE);
+        LoRa.setTxPower(RADIO_TX_POWER);
 
         return;
     }
