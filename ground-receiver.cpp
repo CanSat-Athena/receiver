@@ -133,17 +133,17 @@ void handleDataPacket(packetGround_t packet) {
     usbPrintf(1, "]");
     tud_task();
 
-    // // Get IMU data
-    // usbPrintf(1, "[");
-    // for (int i = 0; i < IMU_READ_FREQ; i++) {
-    //     usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
-    //         receivedLine.imu[i].accel[0], receivedLine.imu[i].accel[1], receivedLine.imu[i].accel[2],
-    //         receivedLine.imu[i].gyro[0], receivedLine.imu[i].gyro[1], receivedLine.imu[i].gyro[2],
-    //         receivedLine.imu[i].mag[0], receivedLine.imu[i].mag[1], receivedLine.imu[i].mag[2]
-    //     );
-    //     tud_task();
-    // }
-    // usbPrintf(1, "]");
+    // Get IMU data
+    usbPrintf(1, "[");
+    for (int i = 0; i < IMU_READ_FREQ; i++) {
+        usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
+            receivedLine.imu[i].accel[0], receivedLine.imu[i].accel[1], receivedLine.imu[i].accel[2],
+            receivedLine.imu[i].gyro[0], receivedLine.imu[i].gyro[1], receivedLine.imu[i].gyro[2],
+            receivedLine.imu[i].mag[0], receivedLine.imu[i].mag[1], receivedLine.imu[i].mag[2]
+        );
+        tud_task();
+    }
+    usbPrintf(1, "]");
 
     // Get light data
     usbPrintf(1, "[");
@@ -175,9 +175,6 @@ void handleDataPacket(packetGround_t packet) {
     tud_task();
 
     usbPrintf(1, "\n");
-    if (packet.packet.type == 'd') {
-
-    }
 }
 
 void initLoRa() {
