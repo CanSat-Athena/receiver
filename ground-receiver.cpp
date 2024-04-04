@@ -110,20 +110,23 @@ void handleDataPacket(packetGround_t packet) {
     dataRadioLine_t& receivedLine = (dataRadioLine_t&)packet.packet.body;
     // int port = packet.type == 't' ? 
 
-    usbPrintf(1, "%u: ", receivedLine.timestamp);
-
-    // Get DHT20 data
     usbPrintf(1, "[");
-    for (int i = 0; i < DHT20_READ_FREQ; i++) {
-        usbPrintf(1, "[%f,%f]", receivedLine.dht20[i].temperature, receivedLine.dht20[i].humidity);
-    }
+    usbPrintf(1, "%u ", receivedLine.timestamp);
     usbPrintf(1, "]");
+    // Get DHT20 data
+
+    usbPrintf(1, ",");
+    
+    for (int i = 0; i < DHT20_READ_FREQ; i++) {
+        usbPrintf(1, "%f,%f", receivedLine.dht20[i].temperature, receivedLine.dht20[i].humidity);
+    }
+    usbPrintf(1, ",");    
     tud_task();
 
     // // Get BME680 data
     // usbPrintf(1, "[");
     // for (int i = 0; i < BME680_READ_FREQ; i++) {
-    //     usbPrintf(1, "[%f,%f,%f,%f]",
+    //     usbPrintf(1, "%f,%f,%f,%f",
     //         receivedLine.bme680[i].temperature,
     //         receivedLine.bme680[i].humidity,
     //         receivedLine.bme680[i].pressure,
@@ -132,11 +135,11 @@ void handleDataPacket(packetGround_t packet) {
     // }
     // usbPrintf(1, "]");
     // tud_task();
-
+    // usbPrintf(1, ",");
     // // Get IMU data
     // usbPrintf(1, "[");
     // for (int i = 0; i < IMU_READ_FREQ; i++) {
-    //     usbPrintf(1, "[%d,%d,%d,%d,%d,%d,%d,%d,%d]",
+    //     usbPrintf(1, "%d,%d,%d,%d,%d,%d,%d,%d,%d",
     //         receivedLine.imu[i].accel[0], receivedLine.imu[i].accel[1], receivedLine.imu[i].accel[2],
     //         receivedLine.imu[i].gyro[0], receivedLine.imu[i].gyro[1], receivedLine.imu[i].gyro[2],
     //         receivedLine.imu[i].mag[0], receivedLine.imu[i].mag[1], receivedLine.imu[i].mag[2]
@@ -144,7 +147,7 @@ void handleDataPacket(packetGround_t packet) {
     //     tud_task();
     // }
     // usbPrintf(1, "]");
-
+    // usbPrintf(1, ",");
     // // Get light data
     // usbPrintf(1, "[");
     // for (int i = 0; i < LIGHT_READ_FREQ; i++) {
@@ -152,7 +155,7 @@ void handleDataPacket(packetGround_t packet) {
     // }
     // usbPrintf(1, "]");
     // tud_task();
-
+    // usbPrintf(1, ",");
     // // Get anemometer data
     // usbPrintf(1, "[");
     // for (int i = 0; i < ANEMOMETER_READ_FREQ; i++) {
@@ -160,6 +163,7 @@ void handleDataPacket(packetGround_t packet) {
     // }
     // usbPrintf(1, "]");
     // tud_task();
+    // usbPrintf(1, ",");
 
     // Get GPS data
     usbPrintf(1, "[");
@@ -167,7 +171,7 @@ void handleDataPacket(packetGround_t packet) {
         receivedLine.gpsData[0].hours, receivedLine.gpsData[0].minutes, receivedLine.gpsData[0].seconds, receivedLine.gpsData[0].fix);
     usbPrintf(1, "]");
     tud_task();
-
+    usbPrintf(1, ",");
     // Battery
     usbPrintf(1, "[");
     // 12-bit conversion, assume max value == ADC_VREF == 3.3 V
@@ -177,13 +181,13 @@ void handleDataPacket(packetGround_t packet) {
     usbPrintf(1, "%f,%f", voltage, percentage);
     usbPrintf(1, "]");
     tud_task();
-
+    usbPrintf(1, ",");
     // Filesystem
     usbPrintf(1, "[");
     usbPrintf(1, "%d,%d", receivedLine.fsSize * (1u << 12), FS_SIZE);   // Block size is 4096
     usbPrintf(1, "]");
     tud_task();
-
+    usbPrintf(1, ",");
     // Get RSSI
     usbPrintf(1, "[");
     usbPrintf(1, "%d", packet.rssi);
