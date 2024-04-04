@@ -115,10 +115,11 @@ void handleDataPacket(packetGround_t packet) {
     usbPrintf(1, "],");
 
     // Get DHT20 data
+    usbPrintf(1, "[");
     for (int i = 0; i < DHT20_READ_FREQ; i++) {
         usbPrintf(1, "%f,%f", receivedLine.dht20[i].temperature, receivedLine.dht20[i].humidity);
     }
-    usbPrintf(1, ",");
+    usbPrintf(1, "],");
     tud_task();
 
     // Get BME680 data
