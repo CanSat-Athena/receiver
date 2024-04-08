@@ -38,6 +38,15 @@ void onReceive(int packetSize) {
     packetGround_t receivedPacket{};
     // char* packet = (char*)(&(receivedPacket.packet));
 
+    const char expectedHeader[RADIO_HEADER_LENGTH + 1] = RADIO_HEADER;
+
+    for (int i = 0; i < RADIO_HEADER_LENGTH; i++) {
+        if (LoRa.read() != expectedHeader[i]) {
+            printf("NON-COMPLIANT HEADER!!!\n");
+            return;
+        }
+    }
+
     receivedPacket.packet.type = LoRa.read();
     receivedPacket.packet.size = LoRa.read();
 
