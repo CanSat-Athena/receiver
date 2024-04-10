@@ -42,7 +42,6 @@ void onReceive(int packetSize) {
 
     for (int i = 0; i < RADIO_HEADER_LENGTH; i++) {
         if (LoRa.read() != expectedHeader[i]) {
-            printf("NON-COMPLIANT HEADER!!!\n");
             return;
         }
     }
@@ -147,7 +146,7 @@ void handleDataPacket(packetGround_t packet) {
     // Get IMU data
     usbPrintf(1, "[");
     for (int i = 0; i < IMU_READ_FREQ; i++) {
-        usbPrintf(1, "[%f,%f,%f,",
+        usbPrintf(1, "%f,%f,%f,",
             (float)receivedLine.imu[i].accel[0] / (16384.0f / 1), (float)receivedLine.imu[i].accel[1] / (16384.0f / 1), (float)receivedLine.imu[i].accel[2] / (16384.0f / 1)
         );
         tud_task();
@@ -155,7 +154,7 @@ void handleDataPacket(packetGround_t packet) {
             (float)receivedLine.imu[i].gyro[0] / 131.0f, (float)receivedLine.imu[i].gyro[1] / 131.0f, (float)receivedLine.imu[i].gyro[2] / 131.0f
         );
         tud_task();
-        usbPrintf(1, "%f,%f,%f]",
+        usbPrintf(1, "%f,%f,%f,",
             ((float)receivedLine.imu[i].mag[0] / 20) * 3, ((float)receivedLine.imu[i].mag[1] / 20) * 3, ((float)receivedLine.imu[i].mag[2] / 20) * 3
         );
         tud_task();
